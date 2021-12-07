@@ -20,6 +20,7 @@ public class PostDtoMapper {
     public Post mapToEntity(@NonNull PostDto postDto) {
 
         Post post = new Post();
+
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());

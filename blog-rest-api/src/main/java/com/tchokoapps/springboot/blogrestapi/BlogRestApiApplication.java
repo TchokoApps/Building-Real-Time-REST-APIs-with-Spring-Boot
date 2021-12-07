@@ -3,7 +3,6 @@ package com.tchokoapps.springboot.blogrestapi;
 import com.github.javafaker.Faker;
 import com.tchokoapps.springboot.blogrestapi.dto.PostDto;
 import com.tchokoapps.springboot.blogrestapi.dto.mapper.PostDtoMapper;
-import com.tchokoapps.springboot.blogrestapi.entity.Post;
 import com.tchokoapps.springboot.blogrestapi.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -33,8 +32,8 @@ public class BlogRestApiApplication implements CommandLineRunner {
 			postDto.setDescription(faker.artist().name());
 			postDto.setContent(faker.artist().name());
 
-			postService.createPostDto(postDto);
-			System.out.println("Created: " + postDto);
+			PostDto savedPostDto = postService.createPostDto(postDto);
+			System.out.println("Created: " + savedPostDto);
 
 		}
 	}

@@ -48,9 +48,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse getAllPostsByPage(int pageNo, int pageSize, String sortBy) {
+    public PostResponse getAllPostsByPage(int pageNo, int pageSize, String sortBy, String sortDir) {
         PostDtoMapper postDtoMapper = new PostDtoMapper();
-        Optional<Pageable> pageableOptional = PageRequest.of(pageNo, pageSize, Sort.by(sortBy)).toOptional();
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Optional<Pageable> pageableOptional = PageRequest.of(pageNo, pageSize, sort).toOptional();
         if (pageableOptional.isPresent()) {
             Page<Post> page = postRepository.findAll(pageableOptional.get());
             List<Post> posts = page.getContent();

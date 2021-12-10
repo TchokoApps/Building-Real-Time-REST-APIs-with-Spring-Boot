@@ -16,6 +16,16 @@ import java.util.List;
 @RequestMapping("/api/posts")
 public class PostController {
 
+    public static final String PAGE_NO = "pageNo";
+    public static final String PAGE_SIZE = "pageSize";
+    public static final String SORT_BY = "sortBy";
+    public static final String SORT_DIR = "sortDir";
+    public static final String PAGE_NO_DEFAULT_VALUE = "0";
+    public static final String PAGE_SIZE_DEFAULT_VALUE = "2";
+    public static final String SORT_BY_DEFAULT_VALUE = "id";
+    public static final String SORT_DIR_DEFAULT_VALUE = "asc";
+    public static final String POST_ID_PARAM = "id";
+
     private PostService postService;
 
     @PostMapping
@@ -30,26 +40,26 @@ public class PostController {
 
     @GetMapping("/pages")
     public PostResponse getAllPostsByPage(
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "2", required = false) int pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
+            @RequestParam(value = PAGE_NO, defaultValue = PAGE_NO_DEFAULT_VALUE, required = false) int pageNo,
+            @RequestParam(value = PAGE_SIZE, defaultValue = PAGE_SIZE_DEFAULT_VALUE, required = false) int pageSize,
+            @RequestParam(value = SORT_BY, defaultValue = SORT_BY_DEFAULT_VALUE, required = false) String sortBy,
+            @RequestParam(value = SORT_DIR, defaultValue = SORT_DIR_DEFAULT_VALUE, required = false) String sortDir) {
         return postService.getAllPostsByPage(pageNo, pageSize, sortBy, sortDir);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable(name = "id") long id) {
+    public ResponseEntity<PostDto> getPostById(@PathVariable(name = POST_ID_PARAM) long id) {
         return new ResponseEntity<>(postService.getPostById(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDto> updatePostById(@RequestBody PostDto postDto, @PathVariable(name = "id") long id) {
+    public ResponseEntity<PostDto> updatePostById(@RequestBody PostDto postDto, @PathVariable(name = POST_ID_PARAM) long id) {
         PostDto updatedPostDto = postService.updatePostById(postDto, id);
         return new ResponseEntity<>(updatedPostDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable(name = "id") long id) {
+    public ResponseEntity<Void> deleteById(@PathVariable(name = POST_ID_PARAM) long id) {
         postService.deletePostById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

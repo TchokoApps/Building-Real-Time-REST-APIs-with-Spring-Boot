@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -47,9 +48,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse getAllPostsByPage(int pageNo, int pageSize) {
+    public PostResponse getAllPostsByPage(int pageNo, int pageSize, String sortBy) {
         PostDtoMapper postDtoMapper = new PostDtoMapper();
-        Optional<Pageable> pageableOptional = PageRequest.of(pageNo, pageSize).toOptional();
+        Optional<Pageable> pageableOptional = PageRequest.of(pageNo, pageSize, Sort.by(sortBy)).toOptional();
         if (pageableOptional.isPresent()) {
             Page<Post> page = postRepository.findAll(pageableOptional.get());
             List<Post> posts = page.getContent();

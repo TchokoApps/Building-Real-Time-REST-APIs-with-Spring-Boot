@@ -1,16 +1,21 @@
 package com.tchokoapps.springboot.blogrestapi.service.impl;
 
 import com.tchokoapps.springboot.blogrestapi.dto.PostDto;
+import com.tchokoapps.springboot.blogrestapi.dto.PostResponse;
 import com.tchokoapps.springboot.blogrestapi.dto.mapper.PostDtoMapper;
 import com.tchokoapps.springboot.blogrestapi.entity.Post;
 import com.tchokoapps.springboot.blogrestapi.exception.ResourceNotFoundException;
 import com.tchokoapps.springboot.blogrestapi.repository.PostRepository;
 import com.tchokoapps.springboot.blogrestapi.service.PostService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -39,6 +44,31 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = postRepository.findAll();
 
         return posts.stream().map(postDtoMapper::mapToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public PostResponse getAllPostsByPage(int pageNo, int pageSize) {
+        PostDtoMapper postDtoMapper = new PostDtoMapper();
+        Optional<Pageable> pageableOptional = PageRequest.of(pageNo, pageSize).toOptional();
+        if (pageableOptional.isPresent()) {
+            Page<Post> page = postRepository.findAll(pageableOptional.get());
+            List<Post> posts = page.getContent();
+            List<PostDto> postDtos = posts.stream().map(postDtoMapper::mapToDto).collect(Collectors.toList());
+            return createPostResponse(page, postDtos);
+        } else {
+            throw new ResourceNotFoundException("post", "pageNo", Integer.toUnsignedLong(pageNo),
+                    "pageSize", Integer.toUnsignedLong(pageSize));
+        }
+    }
+
+    private PostResponse createPostResponse(Page<Post> page, List<PostDto> postDtos) {
+        PostResponse postResponse = new PostResponse();
+        postResponse.setPostDtos(postDtos);
+        postResponse.setPageNo(page.getNumber());
+        postResponse.setPageSize(page.getSize());
+        postResponse.setTotalPages(page.getTotalPages());
+        postResponse.setTotalElements(page.getTotalElements());
+        return postResponse;
     }
 
     @Override

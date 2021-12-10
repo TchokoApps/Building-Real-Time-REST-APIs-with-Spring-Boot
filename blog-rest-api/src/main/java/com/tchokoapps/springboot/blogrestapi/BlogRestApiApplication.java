@@ -2,7 +2,6 @@ package com.tchokoapps.springboot.blogrestapi;
 
 import com.github.javafaker.Faker;
 import com.tchokoapps.springboot.blogrestapi.dto.PostDto;
-import com.tchokoapps.springboot.blogrestapi.dto.mapper.PostDtoMapper;
 import com.tchokoapps.springboot.blogrestapi.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -22,10 +21,9 @@ public class BlogRestApiApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		PostDtoMapper postDtoMapper = new PostDtoMapper();
 		Faker faker = new Faker();
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 100; i++) {
 
 			PostDto postDto = new PostDto();
 			postDto.setTitle(faker.artist().name());

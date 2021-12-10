@@ -1,6 +1,7 @@
 package com.tchokoapps.springboot.blogrestapi.controller;
 
 import com.tchokoapps.springboot.blogrestapi.dto.PostDto;
+import com.tchokoapps.springboot.blogrestapi.dto.PostResponse;
 import com.tchokoapps.springboot.blogrestapi.service.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,12 @@ public class PostController {
     @GetMapping
     public List<PostDto> getAllPosts() {
         return postService.getAllPosts();
+    }
+
+    @GetMapping("/pages")
+    public PostResponse getAllPosts(@RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                                    @RequestParam(value = "pageSize", defaultValue = "2", required = false) int pageSize) {
+        return postService.getAllPostsByPage(pageNo, pageSize);
     }
 
     @GetMapping("/{id}")

@@ -58,14 +58,29 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/api/posts",
+					"raw": "localhost:8080/api/posts/pages?pageNo=3&pageSize=5&sortDir=desc",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"api",
-						"posts"
+						"posts",
+						"pages"
+					],
+					"query": [
+						{
+							"key": "pageNo",
+							"value": "3"
+						},
+						{
+							"key": "pageSize",
+							"value": "5"
+						},
+						{
+							"key": "sortDir",
+							"value": "desc"
+						}
 					]
 				}
 			},

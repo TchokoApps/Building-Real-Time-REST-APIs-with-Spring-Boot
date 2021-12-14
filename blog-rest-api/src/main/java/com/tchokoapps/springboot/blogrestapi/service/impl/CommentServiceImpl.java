@@ -1,7 +1,6 @@
 package com.tchokoapps.springboot.blogrestapi.service.impl;
 
 import com.tchokoapps.springboot.blogrestapi.dto.CommentDto;
-import com.tchokoapps.springboot.blogrestapi.dto.mapper.CommentDtoMapper;
 import com.tchokoapps.springboot.blogrestapi.entity.Comment;
 import com.tchokoapps.springboot.blogrestapi.entity.Post;
 import com.tchokoapps.springboot.blogrestapi.exception.BlogApiException;
@@ -10,6 +9,7 @@ import com.tchokoapps.springboot.blogrestapi.repository.CommentRepository;
 import com.tchokoapps.springboot.blogrestapi.repository.PostRepository;
 import com.tchokoapps.springboot.blogrestapi.service.CommentService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -23,28 +23,28 @@ public class CommentServiceImpl implements CommentService {
 
     private CommentRepository commentRepository;
     private PostRepository postRepository;
-    private CommentDtoMapper commentDtoMapper;
+    private ModelMapper modelMapper;
 
     @Override
     public CommentDto createCommentDto(long postId, @NonNull CommentDto commentDto) {
-        Comment comment = commentDtoMapper.mapToEntity(commentDto);
+        Comment comment = modelMapper.map(commentDto, Comment.class);
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
         comment.setPost(post);
         Comment savedComment = commentRepository.save(comment);
-        return commentDtoMapper.mappToDto(savedComment);
+        return modelMapper.map(savedComment, CommentDto.class);
     }
 
     @Override
     public List<CommentDto> findComments(long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
         List<Comment> comments = commentRepository.findByPost(post);
-        return comments.stream().map(commentDtoMapper::mappToDto).collect(Collectors.toList());
+        return comments.stream().map(comment -> modelMapper.map(comment, CommentDto.class)).collect(Collectors.toList());
     }
 
     @Override
     public CommentDto findComment(long postId, long id) {
         Comment comment2 = find(postId, id);
-        return commentDtoMapper.mappToDto(comment2);
+        return modelMapper.map(comment2, CommentDto.class);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class CommentServiceImpl implements CommentService {
         comment2.setName(commentDto.getName());
         comment2.setBody(commentDto.getBody());
         Comment savedComment = commentRepository.save(comment2);
-        return commentDtoMapper.mappToDto(savedComment);
+        return modelMapper.map(savedComment, CommentDto.class);
     }
 
     @Override

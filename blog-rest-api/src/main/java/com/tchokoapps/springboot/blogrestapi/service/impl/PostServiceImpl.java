@@ -2,12 +2,12 @@ package com.tchokoapps.springboot.blogrestapi.service.impl;
 
 import com.tchokoapps.springboot.blogrestapi.dto.PostDto;
 import com.tchokoapps.springboot.blogrestapi.dto.PostResponse;
-import com.tchokoapps.springboot.blogrestapi.dto.mapper.PostDtoMapper;
 import com.tchokoapps.springboot.blogrestapi.entity.Post;
 import com.tchokoapps.springboot.blogrestapi.exception.ResourceNotFoundException;
 import com.tchokoapps.springboot.blogrestapi.repository.PostRepository;
 import com.tchokoapps.springboot.blogrestapi.service.PostService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,16 +24,16 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
-    private PostDtoMapper postDtoMapper;
+    private ModelMapper modelMapper;
 
     @Override
     public PostDto createPostDto(@NonNull PostDto postDto) {
 
-        Post post = postDtoMapper.mapToEntity(postDto);
+        Post post = modelMapper.map(postDto, Post.class);
 
         Post postSaved = postRepository.save(post);
 
-        return postDtoMapper.mapToDto(postSaved);
+        return modelMapper.map(postSaved, PostDto.class);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class PostServiceImpl implements PostService {
 
         List<Post> posts = postRepository.findAll();
 
-        return posts.stream().map(postDtoMapper::mapToDto).collect(Collectors.toList());
+        return posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -51,7 +51,7 @@ public class PostServiceImpl implements PostService {
         if (pageableOptional.isPresent()) {
             Page<Post> page = postRepository.findAll(pageableOptional.get());
             List<Post> posts = page.getContent();
-            List<PostDto> postDtos = posts.stream().map(postDtoMapper::mapToDto).collect(Collectors.toList());
+            List<PostDto> postDtos = posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
             return createPostResponse(page, postDtos);
         } else {
             throw new ResourceNotFoundException("post", "pageNo", Integer.toUnsignedLong(pageNo),
@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto getPostById(Long id) {
-        return postRepository.findById(id).map(postDtoMapper::mapToDto).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        return postRepository.findById(id).map(post -> modelMapper.map(post, PostDto.class)).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
     }
 
     @Override
@@ -84,7 +84,7 @@ public class PostServiceImpl implements PostService {
         post.setDescription(postDto.getDescription());
         Post savedPost = postRepository.save(post);
 
-        return postDtoMapper.mapToDto(savedPost);
+        return modelMapper.map(savedPost, PostDto.class);
     }
 
     @Override

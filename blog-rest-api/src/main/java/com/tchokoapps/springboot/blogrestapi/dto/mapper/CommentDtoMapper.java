@@ -4,7 +4,9 @@ import com.tchokoapps.springboot.blogrestapi.dto.CommentDto;
 import com.tchokoapps.springboot.blogrestapi.entity.Comment;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 
+@Component
 @NoArgsConstructor
 public class CommentDtoMapper {
 

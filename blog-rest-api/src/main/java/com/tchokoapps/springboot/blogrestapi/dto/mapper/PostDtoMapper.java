@@ -3,7 +3,9 @@ package com.tchokoapps.springboot.blogrestapi.dto.mapper;
 import com.tchokoapps.springboot.blogrestapi.dto.PostDto;
 import com.tchokoapps.springboot.blogrestapi.entity.Post;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PostDtoMapper {
 
     public PostDto mapToDto(@NonNull Post post) {

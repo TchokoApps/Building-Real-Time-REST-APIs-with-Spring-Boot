@@ -23,10 +23,10 @@ public class CommentServiceImpl implements CommentService {
 
     private CommentRepository commentRepository;
     private PostRepository postRepository;
+    private CommentDtoMapper commentDtoMapper;
 
     @Override
     public CommentDto createCommentDto(long postId, @NonNull CommentDto commentDto) {
-        CommentDtoMapper commentDtoMapper = new CommentDtoMapper();
         Comment comment = commentDtoMapper.mapToEntity(commentDto);
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
         comment.setPost(post);
@@ -36,7 +36,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDto> findCommentsByPostId(long postId) {
-        CommentDtoMapper commentDtoMapper = new CommentDtoMapper();
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
         List<Comment> comments = commentRepository.findByPost(post);
         return comments.stream().map(commentDtoMapper::mappToDto).collect(Collectors.toList());
@@ -44,11 +43,24 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto findByPostIdAndId(long postId, long id) {
-        CommentDtoMapper commentDtoMapper = new CommentDtoMapper();
+        Comment comment2 = findComment(postId, id);
+        return commentDtoMapper.mappToDto(comment2);
+    }
+
+    @Override
+    public CommentDto updateByPostIdAndId(long postId, long id, CommentDto commentDto) {
+        Comment comment2 = findComment(postId, id);
+        comment2.setEmail(commentDto.getEmail());
+        comment2.setName(commentDto.getName());
+        comment2.setBody(commentDto.getBody());
+        Comment savedComment = commentRepository.save(comment2);
+        return commentDtoMapper.mappToDto(savedComment);
+    }
+
+    private Comment findComment(long postId, long id) {
         postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
         commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", id));
-        Comment comment2 = commentRepository.findByPostIdAndId(postId, id).orElseThrow(() ->
+        return commentRepository.findByPostIdAndId(postId, id).orElseThrow(() ->
                 new BlogApiException(HttpStatus.BAD_REQUEST, String.format("Comment with id=%s doesn´t belong to post with id=%d", id, postId)));
-        return commentDtoMapper.mappToDto(comment2);
     }
 }

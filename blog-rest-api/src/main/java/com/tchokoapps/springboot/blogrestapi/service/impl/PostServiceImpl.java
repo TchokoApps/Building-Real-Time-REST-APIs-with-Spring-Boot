@@ -24,11 +24,10 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
+    private PostDtoMapper postDtoMapper;
 
     @Override
     public PostDto createPostDto(@NonNull PostDto postDto) {
-
-        PostDtoMapper postDtoMapper = new PostDtoMapper();
 
         Post post = postDtoMapper.mapToEntity(postDto);
 
@@ -40,8 +39,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDto> getAllPosts() {
 
-        PostDtoMapper postDtoMapper = new PostDtoMapper();
-
         List<Post> posts = postRepository.findAll();
 
         return posts.stream().map(postDtoMapper::mapToDto).collect(Collectors.toList());
@@ -49,7 +46,6 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponse getAllPostsByPage(int pageNo, int pageSize, String sortBy, String sortDir) {
-        PostDtoMapper postDtoMapper = new PostDtoMapper();
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Optional<Pageable> pageableOptional = PageRequest.of(pageNo, pageSize, sort).toOptional();
         if (pageableOptional.isPresent()) {
@@ -75,14 +71,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto getPostById(Long id) {
-        PostDtoMapper postDtoMapper = new PostDtoMapper();
         return postRepository.findById(id).map(postDtoMapper::mapToDto).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
     }
 
     @Override
     public PostDto updatePostById(PostDto postDto, Long id) {
-
-        PostDtoMapper postDtoMapper = new PostDtoMapper();
 
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
 

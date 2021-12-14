@@ -10,4 +10,5 @@ public final class Constant {
     public static final String SORT_BY_DEFAULT_VALUE = "id";
     public static final String SORT_DIR_DEFAULT_VALUE = "asc";
     public static final String POST_ID_PARAM = "postId";
+    public static final String COMMENT_ID_PARAM = "commentId";
 }

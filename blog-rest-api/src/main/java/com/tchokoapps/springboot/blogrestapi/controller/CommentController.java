@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.tchokoapps.springboot.blogrestapi.dto.Constant.COMMENT_ID_PARAM;
 import static com.tchokoapps.springboot.blogrestapi.dto.Constant.POST_ID_PARAM;
 
 @AllArgsConstructor
@@ -26,6 +27,12 @@ public class CommentController {
 
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<List<CommentDto>> getCommentsByPostId(@PathVariable(value = POST_ID_PARAM) long postId) {
-        return new ResponseEntity<>(commentService.getCommentsByPostId(postId), HttpStatus.CREATED);
+        return new ResponseEntity<>(commentService.findCommentsByPostId(postId), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/posts/{postId}/comments/{commentId}")
+    public ResponseEntity<CommentDto> getCommentByPostIdAndId(@PathVariable(value = POST_ID_PARAM) long postId,
+                                                              @PathVariable(value = COMMENT_ID_PARAM) long id) {
+        return new ResponseEntity<>(commentService.findByPostIdAndId(postId, id), HttpStatus.CREATED);
     }
 }

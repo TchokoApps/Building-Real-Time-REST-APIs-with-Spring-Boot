@@ -1,12 +1,16 @@
 package com.tchokoapps.springboot.blogrestapi.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class PostDto {
 
     private Long id;
@@ -16,4 +20,6 @@ public class PostDto {
     private String description;
 
     private String content;
+
+    private Set<CommentDto> commentDtos;
 }

@@ -40,20 +40,20 @@ public class PostController {
         return postService.getAllPostsByPage(pageNo, pageSize, sortBy, sortDir);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable(name = POST_ID_PARAM) long id) {
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDto> getPostById(@PathVariable(value = POST_ID_PARAM) long id) {
         return new ResponseEntity<>(postService.getPostById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{postId}")
     public ResponseEntity<PostDto> updatePostById(@RequestBody PostDto postDto,
-                                                  @PathVariable(name = POST_ID_PARAM) long id) {
+                                                  @PathVariable(value = POST_ID_PARAM) long id) {
         PostDto updatedPostDto = postService.updatePostById(postDto, id);
         return new ResponseEntity<>(updatedPostDto, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable(name = POST_ID_PARAM) long id) {
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deleteById(@PathVariable(value = POST_ID_PARAM) long id) {
         postService.deletePostById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

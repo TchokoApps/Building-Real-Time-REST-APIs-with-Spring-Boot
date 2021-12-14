@@ -12,6 +12,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @AllArgsConstructor
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -27,5 +30,13 @@ public class CommentServiceImpl implements CommentService {
         comment.setPost(post);
         Comment savedComment = commentRepository.save(comment);
         return commentDtoMapper.mappToDto(savedComment);
+    }
+
+    @Override
+    public List<CommentDto> getCommentsByPostId(long postId) {
+        CommentDtoMapper commentDtoMapper = new CommentDtoMapper();
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+        List<Comment> comments = commentRepository.findByPost(post);
+        return comments.stream().map(commentDtoMapper::mappToDto).collect(Collectors.toList());
     }
 }

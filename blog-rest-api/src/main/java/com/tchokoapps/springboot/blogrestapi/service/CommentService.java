@@ -7,9 +7,11 @@ import java.util.List;
 public interface CommentService {
     CommentDto createCommentDto(long postId, CommentDto commentDto);
 
-    List<CommentDto> findCommentsByPostId(long postId);
+    List<CommentDto> findComments(long postId);
 
-    CommentDto findByPostIdAndId(long postId, long id);
+    CommentDto findComment(long postId, long id);
 
-    CommentDto updateByPostIdAndId(long postId, long id, CommentDto commentDto);
+    CommentDto updateComment(long postId, long id, CommentDto commentDto);
+
+    void deleteComment(long postId, long id);
 }

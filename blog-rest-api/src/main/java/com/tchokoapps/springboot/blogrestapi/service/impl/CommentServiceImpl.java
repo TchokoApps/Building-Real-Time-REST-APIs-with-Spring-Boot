@@ -35,21 +35,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDto> findCommentsByPostId(long postId) {
+    public List<CommentDto> findComments(long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
         List<Comment> comments = commentRepository.findByPost(post);
         return comments.stream().map(commentDtoMapper::mappToDto).collect(Collectors.toList());
     }
 
     @Override
-    public CommentDto findByPostIdAndId(long postId, long id) {
-        Comment comment2 = findComment(postId, id);
+    public CommentDto findComment(long postId, long id) {
+        Comment comment2 = find(postId, id);
         return commentDtoMapper.mappToDto(comment2);
     }
 
     @Override
-    public CommentDto updateByPostIdAndId(long postId, long id, CommentDto commentDto) {
-        Comment comment2 = findComment(postId, id);
+    public CommentDto updateComment(long postId, long id, CommentDto commentDto) {
+        Comment comment2 = find(postId, id);
         comment2.setEmail(commentDto.getEmail());
         comment2.setName(commentDto.getName());
         comment2.setBody(commentDto.getBody());
@@ -57,7 +57,16 @@ public class CommentServiceImpl implements CommentService {
         return commentDtoMapper.mappToDto(savedComment);
     }
 
-    private Comment findComment(long postId, long id) {
+    @Override
+    public void deleteComment(long postId, long id) {
+        postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+        commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", id));
+        Comment comment = commentRepository.findByPostIdAndId(postId, id).orElseThrow(() ->
+                new BlogApiException(HttpStatus.BAD_REQUEST, String.format("Comment with id=%s doesn´t belong to post with id=%d", id, postId)));
+        commentRepository.delete(comment);
+    }
+
+    private Comment find(long postId, long id) {
         postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
         commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", id));
         return commentRepository.findByPostIdAndId(postId, id).orElseThrow(() ->

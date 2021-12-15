@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.tchokoapps.springboot.blogrestapi.dto.Constant.*;
@@ -22,7 +23,7 @@ public class PostController {
     private PostService postService;
 
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody @NonNull PostDto postDto) {
+    public ResponseEntity<PostDto> createPost(@RequestBody @Valid @NonNull PostDto postDto) {
         return new ResponseEntity<>(postService.createPostDto(postDto), HttpStatus.CREATED);
     }
 
@@ -46,7 +47,7 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostDto> updatePostById(@RequestBody PostDto postDto,
+    public ResponseEntity<PostDto> updatePostById(@RequestBody @Valid PostDto postDto,
                                                   @PathVariable(value = POST_ID_PARAM) long id) {
         PostDto updatedPostDto = postService.updatePostById(postDto, id);
         return new ResponseEntity<>(updatedPostDto, HttpStatus.OK);

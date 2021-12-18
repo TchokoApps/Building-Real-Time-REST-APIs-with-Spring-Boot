@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ public class PostController {
 
     private PostService postService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<PostDto> createPost(@RequestBody @Valid @NonNull PostDto postDto) {
         return new ResponseEntity<>(postService.createPostDto(postDto), HttpStatus.CREATED);
@@ -46,6 +48,7 @@ public class PostController {
         return new ResponseEntity<>(postService.getPostById(id), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{postId}")
     public ResponseEntity<PostDto> updatePostById(@RequestBody @Valid PostDto postDto,
                                                   @PathVariable(value = POST_ID_PARAM) long id) {
@@ -53,6 +56,7 @@ public class PostController {
         return new ResponseEntity<>(updatedPostDto, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deleteById(@PathVariable(value = POST_ID_PARAM) long id) {
         postService.deletePostById(id);

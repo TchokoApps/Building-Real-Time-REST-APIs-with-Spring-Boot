@@ -5,6 +5,7 @@ import com.tchokoapps.springboot.blogrestapi.dto.CommentDto;
 import com.tchokoapps.springboot.blogrestapi.dto.PostDto;
 import com.tchokoapps.springboot.blogrestapi.entity.Role;
 import com.tchokoapps.springboot.blogrestapi.entity.User;
+import com.tchokoapps.springboot.blogrestapi.enums.RoleEnum;
 import com.tchokoapps.springboot.blogrestapi.service.CommentService;
 import com.tchokoapps.springboot.blogrestapi.service.PostService;
 import com.tchokoapps.springboot.blogrestapi.service.RoleService;
@@ -36,7 +37,7 @@ public class BlogRestApiApplication implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
         Faker faker = new Faker();
 
@@ -49,10 +50,10 @@ public class BlogRestApiApplication implements CommandLineRunner {
     private void createRoles() {
 
         Role role = new Role();
-        role.setName("USER");
+        role.setName(RoleEnum.USER.name());
 
         Role role2 = new Role();
-        role2.setName("ADMIN");
+        role2.setName(RoleEnum.ADMIN.name());
 
         roleService.createRole(role);
         roleService.createRole(role2);

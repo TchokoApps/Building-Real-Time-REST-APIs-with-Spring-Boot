@@ -21,6 +21,11 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role findRoleById(long id) {
-        return roleRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Role", "id", id));
+        return roleRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Role", "id", Long.toString(id)));
+    }
+
+    @Override
+    public Role findByName(String name) {
+        return roleRepository.findByName(name).orElseThrow(() -> new ResourceNotFoundException("Role", "name", name));
     }
 }

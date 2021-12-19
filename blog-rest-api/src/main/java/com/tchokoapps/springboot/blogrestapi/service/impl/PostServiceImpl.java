@@ -54,8 +54,8 @@ public class PostServiceImpl implements PostService {
             List<PostDto> postDtos = posts.stream().map(post -> modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
             return createPostResponse(page, postDtos);
         } else {
-            throw new ResourceNotFoundException("post", "pageNo", Integer.toUnsignedLong(pageNo),
-                    "pageSize", Integer.toUnsignedLong(pageSize));
+            throw new ResourceNotFoundException("post", "pageNo", Long.toString(pageNo),
+                    "pageSize", Long.toString(pageSize));
         }
     }
 
@@ -71,13 +71,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto getPostById(Long id) {
-        return postRepository.findById(id).map(post -> modelMapper.map(post, PostDto.class)).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        return postRepository.findById(id).map(post -> modelMapper.map(post, PostDto.class)).orElseThrow(() -> new ResourceNotFoundException("Post", "id", Long.toString(id)));
     }
 
     @Override
     public PostDto updatePostById(PostDto postDto, Long id) {
 
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", Long.toString(id)));
 
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
@@ -89,7 +89,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePostById(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", Long.toString(id)));
         postRepository.delete(post);
     }
 

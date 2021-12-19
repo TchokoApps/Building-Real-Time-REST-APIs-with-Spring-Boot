@@ -28,7 +28,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto createCommentDto(long postId, @NonNull CommentDto commentDto) {
         Comment comment = modelMapper.map(commentDto, Comment.class);
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", Long.toString(postId)));
         comment.setPost(post);
         Comment savedComment = commentRepository.save(comment);
         return modelMapper.map(savedComment, CommentDto.class);
@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDto> findComments(long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", Long.toString(postId)));
         List<Comment> comments = commentRepository.findByPost(post);
         return comments.stream().map(comment -> modelMapper.map(comment, CommentDto.class)).collect(Collectors.toList());
     }
@@ -59,17 +59,17 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(long postId, long id) {
-        postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
-        commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", id));
+        postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", Long.toString(postId)));
+        commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", Long.toString(id)));
         Comment comment = commentRepository.findByPostIdAndId(postId, id).orElseThrow(() ->
-                new BlogApiException(HttpStatus.BAD_REQUEST, String.format("Comment with id=%s doesn´t belong to post with id=%d", id, postId)));
+                new BlogApiException(HttpStatus.BAD_REQUEST, String.format("Comment with id=%s doesn´t belong to post with id=%s", id, postId)));
         commentRepository.delete(comment);
     }
 
     private Comment find(long postId, long id) {
-        postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
-        commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", id));
+        postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", Long.toString(postId)));
+        commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", Long.toString(id)));
         return commentRepository.findByPostIdAndId(postId, id).orElseThrow(() ->
-                new BlogApiException(HttpStatus.BAD_REQUEST, String.format("Comment with id=%s doesn´t belong to post with id=%d", id, postId)));
+                new BlogApiException(HttpStatus.BAD_REQUEST, String.format("Comment with id=%s doesn´t belong to post with id=%s", id, postId)));
     }
 }

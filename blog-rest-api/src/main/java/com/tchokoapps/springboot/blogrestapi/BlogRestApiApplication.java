@@ -12,6 +12,7 @@ import com.tchokoapps.springboot.blogrestapi.service.RoleService;
 import com.tchokoapps.springboot.blogrestapi.service.UserService;
 import com.tchokoapps.springboot.blogrestapi.utils.PasswordEncoder;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.Collections;
 import java.util.HashSet;
 
+@Slf4j
 @AllArgsConstructor
 @SpringBootApplication
 public class BlogRestApiApplication implements CommandLineRunner {
@@ -61,6 +63,7 @@ public class BlogRestApiApplication implements CommandLineRunner {
 
     private void createUser(Faker faker) {
 
+        log.info("--------- Create Users --------- ");
         for (int i = 0; i < NUMBER_OF_USERS; i++) {
             User user = new User();
             user.setName(faker.name().name());
@@ -68,26 +71,27 @@ public class BlogRestApiApplication implements CommandLineRunner {
             user.setEmail(faker.internet().emailAddress());
             user.setPassword(PasswordEncoder.encodePassword("password"));
             user.setRoles(new HashSet<>(Collections.singletonList(roleService.findRoleById(RandomUtils.nextLong(1, 3)))));
-            userService.createUser(user);
+            User createdUser = userService.createUser(user);
+            log.info("CreatedUser:{}", createdUser);
         }
     }
 
     private void createComments(Faker faker) {
 
-        System.out.println("--------- Create Comments --------- ");
+        log.info("--------- Create Comments --------- ");
         for (int i = 0; i < NUMBER_OF_COMMENTS; i++) {
             CommentDto commentDto = new CommentDto();
             commentDto.setBody(faker.funnyName().name());
             commentDto.setName(faker.funnyName().name());
             commentDto.setEmail(faker.internet().emailAddress());
             CommentDto savedCommentDto = commentService.createCommentDto(RandomUtils.nextLong(1, 6), commentDto);
-            System.out.println("Comment created: " + savedCommentDto);
+            log.info("Comment created: {}", savedCommentDto);
         }
     }
 
     private void createPosts(Faker faker) {
 
-        System.out.println("--------- Create Posts --------- ");
+        log.info("--------- Create Posts --------- ");
         for (int i = 0; i < NUMBER_OF_POSTS; i++) {
 
             PostDto postDto = new PostDto();
@@ -96,7 +100,7 @@ public class BlogRestApiApplication implements CommandLineRunner {
             postDto.setContent(faker.artist().name());
 
             PostDto savedPostDto = postService.createPostDto(postDto);
-            System.out.println("Comment created: " + savedPostDto);
+            log.info("Post created: {}", savedPostDto);
 
         }
     }

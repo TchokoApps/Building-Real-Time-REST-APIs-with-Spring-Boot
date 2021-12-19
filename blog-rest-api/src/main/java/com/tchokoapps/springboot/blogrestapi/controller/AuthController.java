@@ -31,6 +31,7 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     private UserService userService;
     private RoleService roleService;
+//    private JwtTockenProvider jwtTockenProvider;
 
     @PostMapping("/signin")
     public ResponseEntity<String> authenticateUser(@RequestBody @NotNull LoginDto loginDto) {
@@ -39,6 +40,17 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new ResponseEntity<>("User signed successfully", HttpStatus.OK);
     }
+
+//    @PostMapping("/signin/jwt")
+//    public ResponseEntity<JwtAuthResponse> authenticateUserByJwt(@RequestBody @NotNull LoginDto loginDto) {
+//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(),
+//                loginDto.getPassword()));
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        String token = jwtTockenProvider.generateTocken(authentication);
+//
+//        return ResponseEntity.ok(new JwtAuthResponse(token));
+//    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@NotNull @RequestBody SignUpDto signUpDto) {
